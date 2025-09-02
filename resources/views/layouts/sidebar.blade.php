@@ -1,0 +1,29 @@
+<aside class="w-72 shrink-0"> {{-- largura fixa, participa do fluxo (sem fixed) --}}
+    <div class="sticky top-16 h-[calc(100vh-4rem)] bg-white border-r">
+        <nav class="py-3">
+            <ul class="space-y-1">
+                <li>
+                    <a href="{{ route('dashboard') }}"
+                        class="block px-4 py-2 rounded
+                              {{ request()->routeIs('dashboard') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-blue-100' }}">
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('profile.edit') }}"
+                        class="block px-4 py-2 rounded
+                              {{ request()->routeIs('profile.*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-blue-100' }}">
+                        Perfil
+                    </a>
+                </li>
+                <li>
+                    <a href="#"
+                        class="block px-4 py-2 rounded
+                              {{ request()->routeIs('bancas.*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-blue-100' }}">
+                        Bancas
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>
