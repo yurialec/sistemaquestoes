@@ -22,11 +22,22 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::table('questoes', function (Blueprint $table) {
-            if (Schema::hasColumn('questoes', 'gabarito_id')) {
-                $table->dropForeign(['gabarito_id']);
-                $table->dropColumn('gabarito_id');
+        if (Schema::hasColumn('questoes', 'gabarito_id')) {
+            $fk = DB::selectOne("
+                SELECT CONSTRAINT_NAME
+                FROM information_schema.KEY_COLUMN_USAGE
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = 'questoes'
+                  AND COLUMN_NAME = 'gabarito_id'
+                  AND REFERENCED_TABLE_NAME IS NOT NULL
+                LIMIT 1
+            ");
+
+            if ($fk) {
+                Schema::table('questoes', function (Blueprint $table) {
+                    $table->dropForeign(['gabarito_id']);
+                });
             }
-        });
+        }
     }
 };

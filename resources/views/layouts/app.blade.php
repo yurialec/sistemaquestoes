@@ -17,15 +17,11 @@
 </head>
 
 <div class="min-h-screen bg-gray-100">
-    @include('layouts.navigation') {{-- navbar fixa no topo (assumindo ~4rem) --}}
-
-    <div class="pt-16 flex"> {{-- espaço da navbar + layout em flex --}}
-        @include('layouts.sidebar') {{-- aside ocupa w-64, não é fixed --}}
-
-        <main class="flex-1"> {{-- cresce e nunca é sobreposto --}}
-            
-
-            {{ $slot }}
+    @include('layouts.navigation')
+    <div class="flex">
+        @include('layouts.sidebar')
+        <main class="flex-1">
+            @yield('content')
         </main>
     </div>
 </div>

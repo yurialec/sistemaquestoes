@@ -5,21 +5,21 @@
                 <li>
                     <a href="{{ route('dashboard') }}"
                         class="block px-4 py-2 rounded
-                              {{ request()->routeIs('dashboard') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-blue-100' }}">
+                              {{ request()->routeIs('dashboard') ? 'bg-indigo-200 text-gray-900 font-medium' : 'text-gray-700 hover:bg-indigo-200' }}">
                         Dashboard
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('profile.edit') }}"
                         class="block px-4 py-2 rounded
-                              {{ request()->routeIs('profile.*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-blue-100' }}">
+                              {{ request()->routeIs('profile.*') ? 'bg-indigo-200 text-gray-900 font-medium' : 'text-gray-700 hover:bg-indigo-200' }}">
                         Perfil
                     </a>
                 </li>
                 <li>
-                    <a href="#"
+                    <a href="{{ route('banca.index') }}"
                         class="block px-4 py-2 rounded
-                              {{ request()->routeIs('bancas.*') ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-700 hover:bg-blue-100' }}">
+                              {{ request()->routeIs('bancas.*') ? 'bg-indigo-200 text-gray-900 font-medium' : 'text-gray-700 hover:bg-indigo-200' }}">
                         Bancas
                     </a>
                 </li>

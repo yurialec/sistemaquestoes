@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\BancaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProvaController;
+use App\Http\Controllers\QuestaoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,10 +25,14 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/bancas', [BancaController::class, 'index'])->name('banca.index');
+Route::get('/provas', [ProvaController::class, 'index'])->name('prova.index');
+Route::get('/questoes/{prova}', [QuestaoController::class, 'index'])->name('questao.index');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

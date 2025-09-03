@@ -9,6 +9,8 @@ class Banca extends Model
 {
     use HasFactory;
 
+    protected $table = 'bancas'; 
+
     protected $fillable = ['nome'];
 
     public function provas()
