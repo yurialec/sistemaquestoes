@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('content')
 
+@section('content')
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white shadow sm:rounded-lg">
             <div class="p-6 mt-3">
@@ -37,14 +37,17 @@
                                 @endforeach
                             </div>
 
-                            <div class="mt-6">
-                                <button type="submit" class="inline-block px-5 py-2 bg-indigo-600 text-dark font-medium rounded-lg 
-                                       hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none shadow-sm">
+                            <div class="mt-6 flex justify-end">
+                                <button data-id="{{ $questao->id }}"
+                                    class="btn-salvar inline-block px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none shadow-sm">
                                     Salvar
                                 </button>
                             </div>
+
+                            <div id="feedback-{{ $questao->id }}" class="mt-3 text-sm font-semibold"></div>
                         </div>
                     @endforeach
+
                     <div class="mt-6">
                         {{ $questoes->onEachSide(1)->links() }}
                     </div>
@@ -55,5 +58,51 @@
         </div>
     </div>
 
+    {{-- Script para submissão via AJAX --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.btn-salvar').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const questaoId = button.getAttribute('data-id');
+                    const selected = document.querySelector(`input[name="questao_${questaoId}"]:checked`);
 
+                    if (!selected) {
+                        // alert('Selecione uma alternativa!');
+                        return;
+                    }
+
+                    const alternativaId = selected.value;
+
+                    try {
+                        let response = await fetch(`/salvar-resposta/${questaoId}`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                            },
+                            body: JSON.stringify({
+                                questao_id: questaoId,
+                                alternativa_id: alternativaId
+                            })
+                        });
+
+                        let data = await response.json();
+                        let feedback = document.getElementById(`feedback-${questaoId}`);
+
+                        if (data.correta) {
+                            feedback.innerHTML = "✅ Resposta correta!";
+                            feedback.className = "mt-3 text-green-600 font-semibold";
+                        } else {
+                            feedback.innerHTML = "❌ Resposta incorreta!";
+                            feedback.className = "mt-3 text-red-600 font-semibold";
+                        }
+
+                    } catch (err) {
+                        console.error(err);
+                        // alert("Erro ao salvar a resposta.");
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
