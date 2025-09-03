@@ -28,6 +28,7 @@ Route::get('/dashboard', function () {
 Route::get('/bancas', [BancaController::class, 'index'])->name('banca.index');
 Route::get('/provas', [ProvaController::class, 'index'])->name('prova.index');
 Route::get('/questoes/{prova}', [QuestaoController::class, 'index'])->name('questao.index');
+Route::get('/responder-questoes', [QuestaoController::class, 'responder'])->name('questao.responder');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

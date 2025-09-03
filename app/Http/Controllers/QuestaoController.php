@@ -16,4 +16,12 @@ class QuestaoController extends Controller
 
         return view('questao.index', compact('questoes'));
     }
+
+    public function responder()
+    {
+        $questoes = Questao::with(['prova.instituicao', 'disciplina', 'alternativas'])
+            ->paginate(10);
+
+        return view('questao.responder.index', compact('questoes'));
+    }
 }

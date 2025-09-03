@@ -9,6 +9,8 @@ class Instituicao extends Model
 {
     use HasFactory;
 
+    protected $table = 'instituicoes';
+
     protected $fillable = ['nome'];
 
     public function provas()

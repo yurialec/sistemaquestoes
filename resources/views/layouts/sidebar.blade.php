@@ -10,6 +10,13 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('questao.responder') }}"
+                        class="block px-4 py-2 rounded
+                              {{ request()->routeIs('profile.*') ? 'bg-indigo-200 text-gray-900 font-medium' : 'text-gray-700 hover:bg-indigo-200' }}">
+                        Responde Questões
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('profile.edit') }}"
                         class="block px-4 py-2 rounded
                               {{ request()->routeIs('profile.*') ? 'bg-indigo-200 text-gray-900 font-medium' : 'text-gray-700 hover:bg-indigo-200' }}">
