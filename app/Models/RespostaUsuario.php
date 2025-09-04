@@ -9,6 +9,8 @@ class RespostaUsuario extends Model
 {
     use HasFactory;
 
+    protected $table = 'respostas_usuarios';
+
     protected $fillable = [
         'user_id',
         'questao_id',

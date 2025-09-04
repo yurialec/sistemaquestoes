@@ -30,7 +30,7 @@ class Questao extends Model
 
     public function alternativas()
     {
-        return $this->hasMany(Alternativa::class)->inRandomOrder();;
+        return $this->hasMany(Alternativa::class)->inRandomOrder();
     }
 
     public function gabarito()

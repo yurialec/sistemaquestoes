@@ -43,8 +43,6 @@
                                     Salvar
                                 </button>
                             </div>
-
-                            <div id="feedback-{{ $questao->id }}" class="mt-3 text-sm font-semibold"></div>
                         </div>
                     @endforeach
 
@@ -58,8 +56,68 @@
         </div>
     </div>
 
+    <!-- Container global para os toasts -->
+    <div id="toast-root" class="fixed z-50 bottom-4 right-4 flex flex-col gap-2 pointer-events-none"></div>
+
     {{-- Script para submissão via AJAX --}}
     <script>
+        // Função genérica para mostrar toast
+        function showToast(type = 'success', text = '') {
+            const root = document.getElementById('toast-root');
+            if (!root) return;
+
+            const isSuccess = type === 'success';
+            const base = document.createElement('div');
+            base.setAttribute('role', 'status');
+            base.className = [
+                "pointer-events-auto w-80 max-w-[90vw] rounded-xl shadow-lg border",
+                "px-4 py-3 pr-10 relative",
+                isSuccess ? "bg-green-50 border-green-300" : "bg-red-50 border-red-300",
+                "text-sm",
+                isSuccess ? "text-green-800" : "text-red-800",
+                "transform transition-all duration-300 ease-out translate-y-2 opacity-0"
+            ].join(' ');
+
+            base.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="shrink-0 mt-0.5 ${isSuccess ? 'text-green-600' : 'text-red-600'}">
+                            ${isSuccess
+                    ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 1 0 1.414l-7.25 7.25a1 1 0 0 1-1.414 0l-3-3a1 1 0 1 1 1.414-1.414L8.5 11.586l6.543-6.543a1 1 0 0 1 1.414 0Z" clip-rule="evenodd"/></svg>'
+                    : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.536-10.95a.75.75 0 0 0-1.06-1.06L10 8.464 7.525 5.99a.75.75 0 0 0-1.06 1.06L8.94 9.525 6.465 12a.75.75 0 1 0 1.06 1.06L10 10.586l2.475 2.475a.75.75 0 1 0 1.06-1.06L11.06 9.525l2.475-2.475Z" clip-rule="evenodd"/></svg>'
+                }
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-medium">${isSuccess ? 'Correto' : 'Incorreto'}</p>
+                            ${text ? `<p class="mt-0.5 opacity-90">${text}</p>` : ''}
+                        </div>
+                        <button class="absolute top-2 right-2 rounded-md p-1 opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 ${isSuccess ? 'focus:ring-green-400' : 'focus:ring-red-400'}" aria-label="Fechar">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ${isSuccess ? 'text-green-700' : 'text-red-700'}" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 5.293a1 1 0 0 1 1.414 0L10 8.586l3.293-3.293a1 1 0 1 1 1.414 1.414L11.414 10l3.293 3.293a1 1 0 0 1-1.414 1.414L10 11.414 6.707 14.707a1 1 0 0 1-1.414-1.414L8.586 10 5.293 6.707a1 1 0 0 1 0-1.414Z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+
+            base.querySelector('button').addEventListener('click', () => removeToast(base));
+
+            root.appendChild(base);
+
+            requestAnimationFrame(() => {
+                base.classList.remove('translate-y-2', 'opacity-0');
+                base.classList.add('translate-y-0', 'opacity-100');
+            });
+
+            const auto = setTimeout(() => removeToast(base), 3500);
+
+            function removeToast(el) {
+                clearTimeout(auto);
+                el.classList.remove('opacity-100', 'translate-y-0');
+                el.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => el.remove(), 250);
+            }
+        }
+
+        // Submissão via AJAX
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.btn-salvar').forEach(button => {
                 button.addEventListener('click', async () => {
@@ -67,7 +125,7 @@
                     const selected = document.querySelector(`input[name="questao_${questaoId}"]:checked`);
 
                     if (!selected) {
-                        // alert('Selecione uma alternativa!');
+                        showToast('error', 'Selecione uma alternativa!');
                         return;
                     }
 
@@ -87,19 +145,16 @@
                         });
 
                         let data = await response.json();
-                        let feedback = document.getElementById(`feedback-${questaoId}`);
 
                         if (data.correta) {
-                            feedback.innerHTML = "✅ Resposta correta!";
-                            feedback.className = "mt-3 text-green-600 font-semibold";
+                            showToast('success', 'Resposta correta!');
                         } else {
-                            feedback.innerHTML = "❌ Resposta incorreta!";
-                            feedback.className = "mt-3 text-red-600 font-semibold";
+                            showToast('error', 'Resposta incorreta!');
                         }
 
                     } catch (err) {
                         console.error(err);
-                        // alert("Erro ao salvar a resposta.");
+                        showToast('error', '');
                     }
                 });
             });
